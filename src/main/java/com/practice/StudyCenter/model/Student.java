@@ -1,12 +1,17 @@
 package com.practice.StudyCenter.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.practice.StudyCenter.model.attandance.Attandance;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -14,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Student{
+public class Student implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +41,7 @@ public class Student{
 
     private String nameOfParent;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDate created_at;
 
     @Enumerated(EnumType.STRING)
@@ -63,4 +68,9 @@ public class Student{
     @ToString.Exclude
     @JsonManagedReference
     private List<Group> groupList;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
+    }
 }

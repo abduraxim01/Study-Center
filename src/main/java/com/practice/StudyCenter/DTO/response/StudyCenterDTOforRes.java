@@ -1,17 +1,21 @@
-package com.practice.StudyCenter.DTO;
+package com.practice.StudyCenter.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StudyCenterDTOForCreate {
+public class StudyCenterDTOforRes {
 
     private String name;
 
     private String phoneNumber;
+
+    private LocalDate created_at;
 }

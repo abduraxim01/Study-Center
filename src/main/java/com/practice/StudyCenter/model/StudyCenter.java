@@ -3,7 +3,9 @@ package com.practice.StudyCenter.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -20,6 +22,9 @@ public class StudyCenter {
     private String name;
 
     private String phoneNumber;
+
+    @CreationTimestamp
+    private LocalDate created_at;
 
     @OneToMany(mappedBy = "studyCenter", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

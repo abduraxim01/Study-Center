@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +40,7 @@ public class Teacher implements UserDetails {
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDate created_at;
 
     @Enumerated(EnumType.STRING)
