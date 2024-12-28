@@ -1,8 +1,9 @@
-package com.practice.StudyCenter.model;
+package com.practice.StudyCenter.model.attandance;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.practice.StudyCenter.model.Group;
+import com.practice.StudyCenter.model.Student;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class Attandance {
 
     private LocalDateTime dateTime;
 
-    private Boolean isHave; // True - if student is in class, False - if student is not in class
+    private AttandanceStatus status;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
