@@ -1,12 +1,10 @@
 package com.practice.StudyCenter.controller;
 
-import com.practice.StudyCenter.DTO.requestDTO.GroupDTOforReq;
-import com.practice.StudyCenter.DTO.requestDTO.TeacherDTOforReq;
-import com.practice.StudyCenter.DTO.requestDTO.TeacherListAsNumber;
+import com.practice.StudyCenter.DTO.requestDTO.*;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.service.GroupService;
+import com.practice.StudyCenter.service.StudentService;
 import com.practice.StudyCenter.service.TeacherService;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,25 +22,30 @@ public class TeacherController {
     @Autowired
     private GroupService grpService;
 
+    @Autowired
+    private StudentService stdService;
+
     @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN')")
-    @PostMapping(value = "/addTeacher/{id}")
-    public ResponseEntity<Object> addTeacher(@RequestBody TeacherDTOforReq teacherDTOforReq, @PathVariable int id) {
+    @PostMapping(value = "/createTeacher/{study_center_id}")
+    public ResponseEntity<Object> createTeacher(@RequestBody TeacherDTOforReq teacherDTOforReq, @PathVariable int study_center_id) {
         try {
-            return ResponseEntity.ok(teachService.addTeacher(teacherDTOforReq, id));
+            return ResponseEntity.ok(teachService.createTeacher(teacherDTOforReq, study_center_id));
         } catch (AllExceptions.IllegalArgumentException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         } catch (AllExceptions.UsernameAlreadyTakenException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         } catch (AllExceptions.InvalidJwtException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.EntityNotFoundException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }
 
     @PreAuthorize(value = "hasAnyRole('ADMIN')")
-    @PostMapping(value = "/addGroup")
-    public ResponseEntity<?> addGroup(@RequestBody GroupDTOforReq groupDTOforReq) {
+    @PostMapping(value = "/createGroup")
+    public ResponseEntity<?> createGroup(@RequestBody GroupDTOforReq groupDTOforReq) {
         try {
-            return ResponseEntity.ok(grpService.addGroup(groupDTOforReq));
+            return ResponseEntity.ok(grpService.createGroup(groupDTOforReq));
         } catch (AllExceptions.InvalidJwtException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
@@ -50,10 +53,50 @@ public class TeacherController {
 
     @PreAuthorize(value = "hasAnyRole('ADMIN')")
     @PostMapping(value = "/assignTeachersToGroup/{groupId}")
-    public ResponseEntity<?> assignTeachersToGroup(@RequestBody TeacherListAsNumber teacherListAsNumber, @PathVariable int groupId) {
+    public ResponseEntity<?> assignTeachersToGroup(@RequestBody UserListAsNumber userListAsNumber, @PathVariable int groupId) {
         try {
-            return ResponseEntity.ok(grpService.assignTeachersToGroup(teacherListAsNumber, groupId));
+            return ResponseEntity.ok(grpService.assignTeachersToGroup(userListAsNumber, groupId));
         } catch (AllExceptions.InvalidJwtException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.NoSuchElementException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN')")
+    @PostMapping(value = "/createStudent/{study_center_id}")
+    public ResponseEntity<?> createStudent(@RequestBody StudentDTOforReq studentDTOforReq, @PathVariable int study_center_id) {
+        try {
+            return ResponseEntity.ok(stdService.createStudent(studentDTOforReq, study_center_id));
+        } catch (AllExceptions.IllegalArgumentException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.UsernameAlreadyTakenException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.InvalidJwtException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.EntityNotFoundException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN')")
+    @PostMapping(value = "/assignStudentsToGroup/{groupId}")
+    public ResponseEntity<?> assignStudentsToGroup(@RequestBody UserListAsNumber userListAsNumber, @PathVariable int groupId) {
+        try {
+            return ResponseEntity.ok(grpService.assignStudentToGroup(userListAsNumber, groupId));
+        } catch (AllExceptions.InvalidJwtException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.NoSuchElementException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN')")
+    @PostMapping(value = "/markAttandance/{groupId}")
+    public ResponseEntity<?> markAttandance(@RequestBody List<AttandanceDTOforReq> attandanceDTOforReqList, @PathVariable int groupId) {
+        try {
+            return ResponseEntity.ok(grpService.markAttandance(attandanceDTOforReqList, groupId));
+        } catch (AllExceptions.NoSuchElementException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }

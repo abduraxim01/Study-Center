@@ -12,6 +12,8 @@ public class TeacherMapper {
 
     final private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    final private GroupMapper grpMapper = new GroupMapper();
+
     public Teacher toModel(TeacherDTOforReq teacherDTOforReq, StudyCenter studyCenter) {
         return Teacher.builder()
                 .name(teacherDTOforReq.getName())
@@ -31,7 +33,7 @@ public class TeacherMapper {
                 .username(teacher.getUsername())
                 .phoneNumber(teacher.getPhoneNumber())
                 .created_at(teacher.getCreated_at())
-//                .groupList(teacher.getGroupList())
+                .groupList(grpMapper.toDTO(teacher.getGroupList()))
                 .build();
     }
 }

@@ -1,10 +1,7 @@
 package com.practice.StudyCenter.service.jwtService;
 
-import com.practice.StudyCenter.exception.AllExceptions;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
@@ -12,9 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -24,10 +19,11 @@ public class JwtUtil {
 
     final private String SECRET_KEY = "LaudateomnesgenteslaudateMagnificatinseculaEtanimamealaudateMagnificatinseculaHappynationlivininahappynationAddthistothedependenciesblockinyourbuildLetmeknowifyouneedfurtherassistance";
 
-    public String encode(String username) {
+    public String encode(String username, Collection<? extends GrantedAuthority> authorities) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("Created by: ", "https://abduraxim.uz");
         extraClaims.put("Username", username);
+        extraClaims.put("Authorities", authorities.toString());
 
         return Jwts
                 .builder()

@@ -4,6 +4,7 @@ import com.practice.StudyCenter.DTO.requestDTO.TeacherDTOforReq;
 import com.practice.StudyCenter.DTO.response.TeacherDTOforRes;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.TeacherMapper;
+import com.practice.StudyCenter.model.StudyCenter;
 import com.practice.StudyCenter.repository.StudyCenterRepository;
 import com.practice.StudyCenter.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class TeacherService {
     private TeacherRepository teachRepository;
 
     @Autowired
-    private StudyCenterRepository stdRepository;
+    private StudyCenterRepository stcRepository;
 
     final private TeacherMapper teachMapper = new TeacherMapper();
 
@@ -29,7 +30,7 @@ public class TeacherService {
 
     final private List<String> phoneOperators = List.of("90", "91");
 
-    public TeacherDTOforRes addTeacher(TeacherDTOforReq teacherDTOforReq, int id) {
+    public TeacherDTOforRes createTeacher(TeacherDTOforReq teacherDTOforReq, int study_center_id) {
         if (phoneNumberChecker(teacherDTOforReq.getPhoneNumber())) {
             logger.error("Telefon nomer xato: from addTeacher PhoneNumber: {}", teacherDTOforReq.getPhoneNumber());
             throw new AllExceptions.IllegalArgumentException("Telefon nomer xato: " + teacherDTOforReq.getPhoneNumber());
@@ -42,8 +43,13 @@ public class TeacherService {
             logger.error("Password 8 belgidan kam: from addTeacher Password: {}", teacherDTOforReq.getPassword());
             throw new AllExceptions.IllegalArgumentException("Password 8 belgidan kam: " + teacherDTOforReq.getPassword());
         }
-        logger.info("Yangi o'qituvchi Username: {} , O'quv markaz Id: {}", teacherDTOforReq.getUsername(), id);
-        return teachMapper.toDTO(teachRepository.save(teachMapper.toModel(teacherDTOforReq, stdRepository.findStudyCenterById(id))));
+        StudyCenter studyCenter = stcRepository.findStudyCenterById(study_center_id);
+        if (studyCenter == null) {
+            logger.error("O'quv markazi topilmadi Id: {}", study_center_id);
+            throw new AllExceptions.EntityNotFoundException("O'quv markazi topilmadi Id: " + study_center_id);
+        }
+        logger.info("Yangi o'qituvchi Username: {} , O'quv markaz Id: {}", teacherDTOforReq.getUsername(), study_center_id);
+        return teachMapper.toDTO(teachRepository.save(teachMapper.toModel(teacherDTOforReq, studyCenter)));
     }
 
     public boolean phoneNumberChecker(String number) {  // if number is true  method return false , number is false method return true

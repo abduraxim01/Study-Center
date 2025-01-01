@@ -3,7 +3,8 @@ package com.practice.StudyCenter.mapper;
 import com.practice.StudyCenter.DTO.requestDTO.GroupDTOforReq;
 import com.practice.StudyCenter.DTO.response.GroupDTOforRes;
 import com.practice.StudyCenter.model.Group;
-import com.practice.StudyCenter.model.Teacher;
+
+import java.util.List;
 
 
 public class GroupMapper {
@@ -22,9 +23,13 @@ public class GroupMapper {
                 .time(group.getTime())
                 .days(group.getDays())
                 .teacherList(group.getTeacherList())
-                .attandanceList(group.getAttandanceList())
-                .resultList(group.getResultList())
                 .studentList(group.getStudentList())
                 .build();
+    }
+
+    public List<GroupDTOforRes> toDTO(List<Group> groups) {
+        return groups.stream()
+                .map(this::toDTO)
+                .toList();
     }
 }
