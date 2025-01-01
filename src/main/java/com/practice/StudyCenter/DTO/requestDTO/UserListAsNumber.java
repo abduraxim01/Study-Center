@@ -9,6 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TeacherListAsNumber {
+public class UserListAsNumber {
     List<Integer> teacherList;
 }

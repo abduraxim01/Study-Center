@@ -1,13 +1,8 @@
 package com.practice.StudyCenter.exception;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@RestControllerAdvice
 public class AllExceptions {
 
     @Getter
@@ -56,23 +51,37 @@ public class AllExceptions {
     }
 
     @Getter
-    public static class Exception extends RuntimeException {
-        private final HttpStatus status = HttpStatus.BAD_GATEWAY;
+    public static class EntityNotFoundException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.NOT_FOUND;
 
-        public Exception(String message) {
+        public EntityNotFoundException(String message) {
             super(message);
         }
     }
 
-//    @ExceptionHandler(ExpiredJwtException.class)
-//    public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT token has expired");
-//    }
+    @Getter
+    public static class NoSuchElementException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.NOT_FOUND;
+
+        public NoSuchElementException(String message) {
+            super(message);
+        }
+    }
+
     @Getter
     public static class ExpiredJwtException extends RuntimeException {
         private final HttpStatus status = HttpStatus.BAD_GATEWAY;
 
         public ExpiredJwtException(String message) {
+            super(message);
+        }
+    }
+
+    @Getter
+    public static class Exception extends RuntimeException {
+        private final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        public Exception(String message) {
             super(message);
         }
     }

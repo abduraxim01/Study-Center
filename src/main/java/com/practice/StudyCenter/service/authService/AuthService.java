@@ -6,7 +6,6 @@ import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.Teacher;
 import com.practice.StudyCenter.repository.StudentRepository;
 import com.practice.StudyCenter.repository.TeacherRepository;
-import com.practice.StudyCenter.service.jwtService.JwtFilter;
 import com.practice.StudyCenter.service.jwtService.JwtUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +46,7 @@ public class AuthService implements UserDetailsService {
         UserDetails user = loadUserByUsername(login.getUsername());
         if (encoder.matches(login.getPassword(), user.getPassword())) {
             logger.info("Username: {} muvafaqqiyatli login qildi", user.getUsername());
-            return jwtUtil.encode(login.getUsername());
+            return jwtUtil.encode(login.getUsername(),user.getAuthorities());
         }
         throw new AllExceptions.UsernameNotFoundException("Username yoki parol xato: from login");
     }

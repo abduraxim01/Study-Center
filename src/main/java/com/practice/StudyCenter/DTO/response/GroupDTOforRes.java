@@ -1,15 +1,8 @@
 package com.practice.StudyCenter.DTO.response;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.practice.StudyCenter.model.Result;
 import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.Teacher;
-import com.practice.StudyCenter.model.attandance.Attandance;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -33,10 +26,6 @@ public class GroupDTOforRes {
     private Set<DayOfWeek> days;
 
     private List<Teacher> teacherList;
-
-    private List<Result> resultList;
-
-    private List<Attandance> attandanceList;
 
     private List<Student> studentList;
 }

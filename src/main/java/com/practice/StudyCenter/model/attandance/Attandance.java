@@ -5,8 +5,9 @@ import com.practice.StudyCenter.model.Group;
 import com.practice.StudyCenter.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -20,7 +21,8 @@ public class Attandance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private LocalDateTime dateTime;
+    @CreationTimestamp
+    private LocalDate localDate;
 
     private AttandanceStatus status;
 
