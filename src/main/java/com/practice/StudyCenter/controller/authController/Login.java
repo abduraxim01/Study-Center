@@ -20,6 +20,8 @@ public class Login {
             return ResponseEntity.ok(authService.login(login));
         } catch (AllExceptions.UsernameNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }   catch (AllExceptions.IllegalArgumentException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }
 }

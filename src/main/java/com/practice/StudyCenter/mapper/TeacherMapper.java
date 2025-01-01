@@ -31,6 +31,7 @@ public class TeacherMapper {
                 .username(teacher.getUsername())
                 .phoneNumber(teacher.getPhoneNumber())
                 .created_at(teacher.getCreated_at())
+//                .groupList(teacher.getGroupList())
                 .build();
     }
 }

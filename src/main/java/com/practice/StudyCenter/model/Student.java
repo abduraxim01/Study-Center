@@ -1,5 +1,6 @@
 package com.practice.StudyCenter.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.practice.StudyCenter.model.attandance.Attandance;
 import jakarta.persistence.*;
@@ -15,7 +16,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -49,15 +51,14 @@ public class Student implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "study_center_id")
+    @JsonBackReference
     private StudyCenter studyCenter;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Attandance> attandanceList;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Result> resultList;
 
@@ -65,12 +66,15 @@ public class Student implements UserDetails {
     @JoinTable(name = "student_group",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
-    @ToString.Exclude
     @JsonManagedReference
     private List<Group> groupList;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Payment> paymentList;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 }

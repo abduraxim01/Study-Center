@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.practice.StudyCenter.model.Group;
 import com.practice.StudyCenter.model.Student;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

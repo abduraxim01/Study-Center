@@ -9,7 +9,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,12 +28,10 @@ public class StudyCenter {
     private LocalDate created_at;
 
     @OneToMany(mappedBy = "studyCenter", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Teacher> teacherList;
 
     @OneToMany(mappedBy = "studyCenter", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Student> studentList;
 }
