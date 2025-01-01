@@ -17,7 +17,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "group_table")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -31,8 +32,6 @@ public class Group {
     @Size(min = 5, message = "Name must be at least 5 characters")
     private String name;
 
-    private String phoneNumber;
-
     @CreationTimestamp
     private LocalDate created_at;
 
@@ -42,23 +41,22 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> days;
 
-    @ManyToMany(mappedBy = "groupList")
-    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "teacher_group",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
     @JsonBackReference
     private List<Teacher> teacherList;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Result> resultList;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     @JsonManagedReference
     private List<Attandance> attandanceList;
 
     @ManyToMany(mappedBy = "groupList")
-    @ToString.Exclude
     @JsonBackReference
     private List<Student> studentList;
 }

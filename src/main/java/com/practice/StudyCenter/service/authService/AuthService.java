@@ -6,7 +6,10 @@ import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.Teacher;
 import com.practice.StudyCenter.repository.StudentRepository;
 import com.practice.StudyCenter.repository.TeacherRepository;
+import com.practice.StudyCenter.service.jwtService.JwtFilter;
 import com.practice.StudyCenter.service.jwtService.JwtUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,13 +26,14 @@ public class AuthService implements UserDetailsService {
     @Autowired
     private StudentRepository stdRepository;
 
+    final private Logger logger = LogManager.getLogger(AuthService.class);
+
     final private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     final private JwtUtil jwtUtil = new JwtUtil();
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        System.out.println("loadUserByUsername : " + username);
         Teacher teacher = teachRepository.findTeacherByUsername(username);
         if (teacher != null) return teacher;
 
@@ -42,6 +46,7 @@ public class AuthService implements UserDetailsService {
     public String login(LoginDTO login) {
         UserDetails user = loadUserByUsername(login.getUsername());
         if (encoder.matches(login.getPassword(), user.getPassword())) {
+            logger.info("Username: {} muvafaqqiyatli login qildi", user.getUsername());
             return jwtUtil.encode(login.getUsername());
         }
         throw new AllExceptions.UsernameNotFoundException("Username yoki parol xato: from login");

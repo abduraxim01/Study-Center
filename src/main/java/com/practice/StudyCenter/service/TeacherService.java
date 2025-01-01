@@ -42,6 +42,7 @@ public class TeacherService {
             logger.error("Password 8 belgidan kam: from addTeacher Password: {}", teacherDTOforReq.getPassword());
             throw new AllExceptions.IllegalArgumentException("Password 8 belgidan kam: " + teacherDTOforReq.getPassword());
         }
+        logger.info("Yangi o'qituvchi Username: {} , O'quv markaz Id: {}", teacherDTOforReq.getUsername(), id);
         return teachMapper.toDTO(teachRepository.save(teachMapper.toModel(teacherDTOforReq, stdRepository.findStudyCenterById(id))));
     }
 

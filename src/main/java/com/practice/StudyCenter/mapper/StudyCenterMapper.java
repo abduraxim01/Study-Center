@@ -13,8 +13,9 @@ public class StudyCenterMapper {
                 .build();
     }
 
-    public StudyCenterDTOforRes toDTO(StudyCenter studyCenter){
+    public StudyCenterDTOforRes toDTO(StudyCenter studyCenter) {
         return StudyCenterDTOforRes.builder()
+                .id(studyCenter.getId())
                 .name(studyCenter.getName())
                 .phoneNumber(studyCenter.getPhoneNumber())
                 .created_at(studyCenter.getCreated_at())
