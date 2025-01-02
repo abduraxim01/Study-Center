@@ -5,12 +5,12 @@ import com.practice.StudyCenter.DTO.response.TeacherDTOforRes;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.TeacherMapper;
 import com.practice.StudyCenter.model.StudyCenter;
+import com.practice.StudyCenter.model.Teacher;
 import com.practice.StudyCenter.repository.StudyCenterRepository;
 import com.practice.StudyCenter.repository.TeacherRepository;
+import com.practice.StudyCenter.service.smsService.SendSMSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -24,14 +24,15 @@ public class TeacherService {
     @Autowired
     private StudyCenterRepository stcRepository;
 
+    @Autowired
+    private SendSMSService smsService;
+
     final private TeacherMapper teachMapper = new TeacherMapper();
 
     final private Logger logger = LogManager.getLogger(TeacherService.class);
 
-    final private List<String> phoneOperators = List.of("90", "91");
-
-    public TeacherDTOforRes createTeacher(TeacherDTOforReq teacherDTOforReq, int study_center_id) {
-        if (phoneNumberChecker(teacherDTOforReq.getPhoneNumber())) {
+    public TeacherDTOforRes createTeacher(TeacherDTOforReq teacherDTOforReq, int study_center_id) throws AllExceptions.NullPointerException {
+        if (isValidPhoneNumber(teacherDTOforReq.getPhoneNumber())) {
             logger.error("Telefon nomer xato: from addTeacher PhoneNumber: {}", teacherDTOforReq.getPhoneNumber());
             throw new AllExceptions.IllegalArgumentException("Telefon nomer xato: " + teacherDTOforReq.getPhoneNumber());
         }
@@ -49,11 +50,16 @@ public class TeacherService {
             throw new AllExceptions.EntityNotFoundException("O'quv markazi topilmadi Id: " + study_center_id);
         }
         logger.info("Yangi o'qituvchi Username: {} , O'quv markaz Id: {}", teacherDTOforReq.getUsername(), study_center_id);
+        smsService.sendSMSForAuth(validationPhoneNumber(teacherDTOforReq.getPhoneNumber()));
         return teachMapper.toDTO(teachRepository.save(teachMapper.toModel(teacherDTOforReq, studyCenter)));
     }
 
-    public boolean phoneNumberChecker(String number) {  // if number is true  method return false , number is false method return true
-        if (number.length() != 13) return true;
-        return !phoneOperators.contains(number.substring(4, 6));
+    public boolean isValidPhoneNumber(String phoneNumber) { // if number is true  method return false , number is false method return true
+        String regex = "^\\+998(20|33|90|91|93|94|99)\\d{7}$";
+        return !phoneNumber.trim().matches(regex);
+    }
+
+    public String validationPhoneNumber(String phoneNumber) {
+        return phoneNumber.trim().substring(4);
     }
 }
