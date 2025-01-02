@@ -37,9 +37,11 @@ public class Configuration {
                             .requestMatchers(TEACHER_API + "/createTeacher/{study_center_id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPERADMIN")
                             .requestMatchers(TEACHER_API + "/createGroup").hasAnyAuthority("ROLE_ADMIN")
                             .requestMatchers(TEACHER_API + "/assignTeachersToGroup/{groupId}").hasAnyAuthority("ROLE_ADMIN")
-                            .requestMatchers(TEACHER_API + "/createStudent/{study_center_id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPERADMIN")
+                            .requestMatchers(TEACHER_API + "/createStudent/{study_center_id}").hasAnyAuthority("ROLE_ADMIN")
                             .requestMatchers(TEACHER_API + "/assignStudentsToGroup/{groupId}").hasAnyAuthority("ROLE_ADMIN")
                             .requestMatchers(TEACHER_API + "/markAttandance/{groupId}").hasAnyAuthority("ROLE_ADMIN")
+                            .requestMatchers(TEACHER_API + "/markPayment").hasAnyAuthority("ROLE_ADMIN")
+                            .requestMatchers(TEACHER_API + "/postResult/{groupId}").hasAnyAuthority("ROLE_ADMIN")
                             .anyRequest().permitAll();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

@@ -36,7 +36,7 @@ public class AdminService {
             logger.error("Maydon null bo'la olmaydi: from addStudyCenter");
             throw new AllExceptions.NullPointerException("Maydon null bo'la olmaydi");
         }
-        if (teachService.phoneNumberChecker(studyCenterDTOforReq.getPhoneNumber())) {
+        if (teachService.isValidPhoneNumber(studyCenterDTOforReq.getPhoneNumber())) {
             logger.error("Telefon nomer xato: from addStudyCenter PhoneNumber: {}", studyCenterDTOforReq.getPhoneNumber());
             throw new AllExceptions.IllegalArgumentException("Telefon nomer xato: " + studyCenterDTOforReq.getPhoneNumber());
         }

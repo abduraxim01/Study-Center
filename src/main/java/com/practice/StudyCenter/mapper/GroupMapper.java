@@ -4,6 +4,7 @@ import com.practice.StudyCenter.DTO.requestDTO.GroupDTOforReq;
 import com.practice.StudyCenter.DTO.response.GroupDTOforRes;
 import com.practice.StudyCenter.model.Group;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +29,7 @@ public class GroupMapper {
     }
 
     public List<GroupDTOforRes> toDTO(List<Group> groups) {
+        if (groups == null) return new ArrayList<>();
         return groups.stream()
                 .map(this::toDTO)
                 .toList();

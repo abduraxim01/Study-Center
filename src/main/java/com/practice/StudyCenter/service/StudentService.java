@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import org.apache.logging.log4j.LogManager;
 
-import java.util.List;
-
 @Service
 public class StudentService {
 
@@ -26,12 +24,10 @@ public class StudentService {
 
     final private Logger logger = LogManager.getLogger(StudentService.class);
 
-    final private List<String> phoneOperators = List.of("90", "91");
-
     final private StudentMapper stdMapper = new StudentMapper();
 
     public Student createStudent(StudentDTOforReq studentDTOforReq, int study_center_id) {
-        if (phoneNumberChecker(studentDTOforReq.getPhoneNumber())) {
+        if (isValidPhoneNumber(studentDTOforReq.getPhoneNumber())) {
             logger.error("Telefon nomer xato: from createStudent PhoneNumber: {}", studentDTOforReq.getPhoneNumber());
             throw new AllExceptions.IllegalArgumentException("Telefon nomer xato: " + studentDTOforReq.getPhoneNumber());
         }
@@ -52,10 +48,8 @@ public class StudentService {
         return stdRepository.save(stdMapper.toModel(studentDTOforReq, studyCenter));
     }
 
-    public boolean phoneNumberChecker(String number) {  // if number is true  method return false , number is false method return true
-        if (number.length() != 13) return true;
-        return !phoneOperators.contains(number.substring(4, 6));
+    public boolean isValidPhoneNumber(String phoneNumber) { // if number is true  method return false , number is false method return true
+        String regex = "^\\+998(90|91|92|94|95)\\d{7}$";
+        return !phoneNumber.trim().matches(regex);
     }
-
-
 }

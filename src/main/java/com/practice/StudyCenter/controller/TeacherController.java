@@ -38,6 +38,8 @@ public class TeacherController {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.NullPointerException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }
 
@@ -96,6 +98,28 @@ public class TeacherController {
     public ResponseEntity<?> markAttandance(@RequestBody List<AttandanceDTOforReq> attandanceDTOforReqList, @PathVariable int groupId) {
         try {
             return ResponseEntity.ok(grpService.markAttandance(attandanceDTOforReqList, groupId));
+        } catch (AllExceptions.NoSuchElementException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN')")
+    @PostMapping(value = "/markPayment")
+    public ResponseEntity<?> markPayment(@RequestBody PaymentDTOforReq paymentDTOforReq) {
+        try {
+            return ResponseEntity.ok(grpService.markPayment(paymentDTOforReq));
+        } catch (AllExceptions.EntityNotFoundException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.InvalidJwtException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN')")
+    @PostMapping(value = "/postResult/{groupId}")
+    public ResponseEntity<?> postResult(@RequestBody List<ResultDTOforReq> resultDTOforReqList, @PathVariable int groupId) {
+        try {
+            return ResponseEntity.ok(grpService.postResult(resultDTOforReqList, groupId));
         } catch (AllExceptions.NoSuchElementException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }

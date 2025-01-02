@@ -1,19 +1,13 @@
 package com.practice.StudyCenter.service;
 
-import com.practice.StudyCenter.DTO.requestDTO.AttandanceDTOforReq;
-import com.practice.StudyCenter.DTO.requestDTO.GroupDTOforReq;
-import com.practice.StudyCenter.DTO.requestDTO.UserListAsNumber;
+import com.practice.StudyCenter.DTO.requestDTO.*;
 import com.practice.StudyCenter.DTO.response.GroupDTOforRes;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.GroupMapper;
-import com.practice.StudyCenter.model.Group;
-import com.practice.StudyCenter.model.Student;
-import com.practice.StudyCenter.model.Teacher;
+import com.practice.StudyCenter.mapper.PaymentMapper;
+import com.practice.StudyCenter.model.*;
 import com.practice.StudyCenter.model.attandance.Attandance;
-import com.practice.StudyCenter.repository.AttandanceRepository;
-import com.practice.StudyCenter.repository.GroupRepository;
-import com.practice.StudyCenter.repository.StudentRepository;
-import com.practice.StudyCenter.repository.TeacherRepository;
+import com.practice.StudyCenter.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -36,7 +30,15 @@ public class GroupService {
     @Autowired
     private AttandanceRepository attRepository;
 
+    @Autowired
+    private ResultRepository rstRepository;
+
+    @Autowired
+    private PaymentRepository pymRepository;
+
     final private GroupMapper grpMapper = new GroupMapper();
+
+    final private PaymentMapper pymMapper = new PaymentMapper();
 
     public GroupDTOforRes createGroup(GroupDTOforReq groupDTOforReq) {
         return grpMapper.toDTO(grpRepository.save(
@@ -80,4 +82,19 @@ public class GroupService {
         return attRepository.saveAll(attandanceList);
     }
 
+    public Payment markPayment(PaymentDTOforReq paymentDTOforReq) {
+        return pymRepository.save(pymMapper.toModel(
+                paymentDTOforReq, stdRepository.findById(paymentDTOforReq.getStudent_id()).get()));
+    }
+
+    public List<Result> postResult(List<ResultDTOforReq> resultDTOforReqList, int groupId) {
+        Group group = grpRepository.findById(groupId).get();
+        List<Result> resultList = new ArrayList<>();
+        resultDTOforReqList.forEach(result -> resultList.add(Result.builder()
+                .grade(result.getGrade())
+                .group(group)
+                .student((stdRepository.findById(result.getStudent_id()).get()))
+                .build()));
+        return rstRepository.saveAll(resultList);
+    }
 }
