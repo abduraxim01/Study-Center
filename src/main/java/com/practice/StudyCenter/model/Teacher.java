@@ -2,6 +2,8 @@ package com.practice.StudyCenter.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.practice.StudyCenter.model.privileges.Permission;
+import com.practice.StudyCenter.model.privileges.Role;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -13,7 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,7 +52,7 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "teacher_group",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
@@ -60,8 +64,20 @@ public class Teacher implements UserDetails {
     @JsonBackReference
     private StudyCenter studyCenter;
 
+    @Enumerated(EnumType.STRING)
+    private Set<Permission> permissions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>(
+                Set.of(new SimpleGrantedAuthority("ROLE_" + role.name())));
+
+        if (permissions != null) {
+            authorities.addAll(permissions.stream()
+                    .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                    .toList());
+        }
+        return authorities;
     }
 }

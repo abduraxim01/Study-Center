@@ -1,4 +1,4 @@
-package com.practice.StudyCenter.model;
+package com.practice.StudyCenter.model.privileges;
 
 public enum Role {
 

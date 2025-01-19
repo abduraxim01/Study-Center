@@ -6,6 +6,7 @@ import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.TeacherMapper;
 import com.practice.StudyCenter.model.StudyCenter;
 import com.practice.StudyCenter.model.Teacher;
+import com.practice.StudyCenter.model.privileges.Permission;
 import com.practice.StudyCenter.repository.StudyCenterRepository;
 import com.practice.StudyCenter.repository.TeacherRepository;
 import com.practice.StudyCenter.service.smsService.SendSMSService;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Service;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class TeacherService {
@@ -52,6 +57,19 @@ public class TeacherService {
         logger.info("Yangi o'qituvchi Username: {} , O'quv markaz Id: {}", teacherDTOforReq.getUsername(), study_center_id);
         smsService.sendSMSForAuth(validationPhoneNumber(teacherDTOforReq.getPhoneNumber()));
         return teachMapper.toDTO(teachRepository.save(teachMapper.toModel(teacherDTOforReq, studyCenter)));
+    }
+
+    public Teacher setPermission(Set<String> permissions, int user_id) {
+        Teacher teacher = teachRepository.findById(user_id).get();
+        Set<Permission> permissionSet = new HashSet<>();
+        try {
+            permissions.forEach(permission -> permissionSet.add(Permission.valueOf(permission)));
+        } catch (IllegalArgumentException exception) {
+            logger.error("Noto'g'ri ruxsat mavjud: {}", permissions.toArray());
+            throw new AllExceptions.IllegalArgumentException("Noto'g'ri ruxsat mavjud: " + Arrays.toString(permissions.toArray()));
+        }
+        teacher.setPermissions(permissionSet);
+        return teachRepository.save(teacher);
     }
 
     public boolean isValidPhoneNumber(String phoneNumber) { // if number is true  method return false , number is false method return true

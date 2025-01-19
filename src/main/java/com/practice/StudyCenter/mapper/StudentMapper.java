@@ -1,7 +1,7 @@
 package com.practice.StudyCenter.mapper;
 
 import com.practice.StudyCenter.DTO.requestDTO.StudentDTOforReq;
-import com.practice.StudyCenter.model.Role;
+import com.practice.StudyCenter.model.privileges.Role;
 import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.StudyCenter;
 

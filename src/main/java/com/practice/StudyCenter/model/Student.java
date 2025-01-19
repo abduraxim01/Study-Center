@@ -3,6 +3,7 @@ package com.practice.StudyCenter.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.practice.StudyCenter.model.attandance.Attandance;
+import com.practice.StudyCenter.model.privileges.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;

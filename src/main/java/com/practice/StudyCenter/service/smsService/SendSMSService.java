@@ -25,7 +25,7 @@ public class SendSMSService {
                     .addFormDataPart("mobile_phone", "998" + phoneNumber)
                     .addFormDataPart("message", "This is test from Eskiz")
                     .addFormDataPart("from", "4546")
-                    .addFormDataPart("callback_url", "http://abduraxim.uz")
+                    .addFormDataPart("callback_url", "https://abduraxim.uz")
                     .build();
             Request request = new Request.Builder()
                     .url("https://notify.eskiz.uz/api/message/sms/send")

@@ -2,11 +2,15 @@ package com.practice.StudyCenter.mapper;
 
 import com.practice.StudyCenter.DTO.requestDTO.TeacherDTOforReq;
 import com.practice.StudyCenter.DTO.response.TeacherDTOforRes;
-import com.practice.StudyCenter.model.Role;
+import com.practice.StudyCenter.model.privileges.Permission;
+import com.practice.StudyCenter.model.privileges.Role;
 import com.practice.StudyCenter.model.StudyCenter;
 import com.practice.StudyCenter.model.Teacher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class TeacherMapper {
 
@@ -36,4 +40,10 @@ public class TeacherMapper {
                 .groupList(grpMapper.toDTO(teacher.getGroupList()))
                 .build();
     }
+
+//    public Set<Permission> setPermissions(Set<String> permissions, Teacher teacher) {
+//        Set<Permission> permissionSet = new HashSet<>();
+//        permissions.stream()
+//                .forEach(permission -> permissionSet.add(Permission.valueOf(permission)));
+//    }
 }
