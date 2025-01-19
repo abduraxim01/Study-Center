@@ -2,6 +2,7 @@ package com.practice.StudyCenter.controller;
 
 import com.practice.StudyCenter.DTO.requestDTO.*;
 import com.practice.StudyCenter.exception.AllExceptions;
+import com.practice.StudyCenter.model.privileges.Permission;
 import com.practice.StudyCenter.service.GroupService;
 import com.practice.StudyCenter.service.StudentService;
 import com.practice.StudyCenter.service.TeacherService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/api/teacher")
@@ -25,7 +27,7 @@ public class TeacherController {
     @Autowired
     private StudentService stdService;
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('CREATE_ADMIN')")
     @PostMapping(value = "/createTeacher/{study_center_id}")
     public ResponseEntity<Object> createTeacher(@RequestBody TeacherDTOforReq teacherDTOforReq, @PathVariable int study_center_id) {
         try {
@@ -41,6 +43,17 @@ public class TeacherController {
         } catch (AllExceptions.NullPointerException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('MODIFY_ADMIN')")
+    @PutMapping(value = "/setPermissions/{user_id}")
+    public ResponseEntity<?> setPermissions(@RequestBody Set<String> permissions, @PathVariable int user_id) {
+        try {
+            return ResponseEntity.ok(teachService.setPermission(permissions, user_id));
+        } catch (AllExceptions.IllegalArgumentException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+
     }
 
     @PreAuthorize(value = "hasAnyRole('ADMIN')")

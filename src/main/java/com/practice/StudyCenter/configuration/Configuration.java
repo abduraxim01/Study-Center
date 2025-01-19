@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @org.springframework.context.annotation.Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class Configuration {
 
     @Autowired
@@ -34,7 +36,7 @@ public class Configuration {
                 .authorizeHttpRequests(requestsConfigurer -> {
                     requestsConfigurer
                             .requestMatchers("/api/admin/addStudyCenter").hasAuthority("ROLE_SUPERADMIN")
-                            .requestMatchers(TEACHER_API + "/createTeacher/{study_center_id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPERADMIN")
+                            .requestMatchers(TEACHER_API + "/createTeacher/{study_center_id}").hasAnyRole("ADMIN", "SUPERADMIN")
                             .requestMatchers(TEACHER_API + "/createGroup").hasAnyAuthority("ROLE_ADMIN")
                             .requestMatchers(TEACHER_API + "/assignTeachersToGroup/{groupId}").hasAnyAuthority("ROLE_ADMIN")
                             .requestMatchers(TEACHER_API + "/createStudent/{study_center_id}").hasAnyAuthority("ROLE_ADMIN")

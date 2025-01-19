@@ -15,7 +15,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    final private int TOKEN_LIVE_TIME = 1000 * 60 * 60 * 24; // 1-day
+    final private int TOKEN_LIVE_TIME = 1000 * 60 * 60 * 24; // a day
 
     final private String SECRET_KEY = "LaudateomnesgenteslaudateMagnificatinseculaEtanimamealaudateMagnificatinseculaHappynationlivininahappynationAddthistothedependenciesblockinyourbuildLetmeknowifyouneedfurtherassistance";
 

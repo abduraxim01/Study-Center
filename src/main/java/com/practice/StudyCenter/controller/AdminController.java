@@ -20,7 +20,7 @@ public class AdminController {
     private AdminService adminService;
 
     @Autowired
-    private StudyCenterRepository rep;
+    private StudyCenterRepository stdRepository;
 
     @PreAuthorize(value = "hasRole('SUPERADMIN')")
     @PostMapping(value = "/addStudyCenter")
@@ -38,6 +38,6 @@ public class AdminController {
 
     @GetMapping(value = "/all")
     public List<StudyCenter> get(){
-     return rep.findAll();
+     return stdRepository.findAll();
     }
 }
