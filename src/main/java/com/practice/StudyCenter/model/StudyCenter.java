@@ -34,4 +34,8 @@ public class StudyCenter {
     @OneToMany(mappedBy = "studyCenter", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Student> studentList;
+
+    @OneToMany(mappedBy = "studyCenter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Group> groupList;
 }

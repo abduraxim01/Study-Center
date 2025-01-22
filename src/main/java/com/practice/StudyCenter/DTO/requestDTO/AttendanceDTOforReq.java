@@ -1,6 +1,6 @@
 package com.practice.StudyCenter.DTO.requestDTO;
 
-import com.practice.StudyCenter.model.attandance.AttandanceStatus;
+import com.practice.StudyCenter.model.attendance.AttendanceStatus;
 import lombok.*;
 
 @Getter
@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AttandanceDTOforReq {
+public class AttendanceDTOforReq {
 
-    private AttandanceStatus status;
+    private AttendanceStatus status;
 
     private Integer student_id;
 }

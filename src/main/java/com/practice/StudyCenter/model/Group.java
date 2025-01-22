@@ -1,6 +1,8 @@
 package com.practice.StudyCenter.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.practice.StudyCenter.model.attendance.Attendance;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -52,4 +54,17 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "student_id"))
     @JsonBackReference
     private List<Student> studentList;
+
+    @ManyToOne
+    @JoinColumn(name = "study_center_id")
+    @JsonBackReference
+    private StudyCenter studyCenter;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Result> resultList;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Attendance> attendanceList;
 }

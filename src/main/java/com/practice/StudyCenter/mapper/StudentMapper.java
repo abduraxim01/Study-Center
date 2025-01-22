@@ -1,6 +1,7 @@
 package com.practice.StudyCenter.mapper;
 
 import com.practice.StudyCenter.DTO.requestDTO.StudentDTOforReq;
+import com.practice.StudyCenter.DTO.response.StudentDTOforRes;
 import com.practice.StudyCenter.model.privileges.Role;
 import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.StudyCenter;
@@ -19,4 +20,15 @@ public class StudentMapper {
                 .role(Role.USER)
                 .build();
     }
+
+    public StudentDTOforRes toDTO(Student student) {
+        return StudentDTOforRes.builder()
+                .name(student.getName())
+                .surname(student.getSurname())
+                .nameOfParent(student.getNameOfParent())
+                .phoneNumber(student.getPhoneNumber())
+                .created_at(student.getCreated_at())
+                .build();
+    }
+
 }

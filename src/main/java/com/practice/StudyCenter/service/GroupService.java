@@ -5,8 +5,9 @@ import com.practice.StudyCenter.DTO.response.GroupDTOforRes;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.GroupMapper;
 import com.practice.StudyCenter.mapper.PaymentMapper;
+import com.practice.StudyCenter.mapper.StudentMapper;
 import com.practice.StudyCenter.model.*;
-import com.practice.StudyCenter.model.attandance.Attandance;
+import com.practice.StudyCenter.model.attendance.Attendance;
 import com.practice.StudyCenter.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,24 +26,47 @@ public class GroupService {
     private TeacherRepository teachRepository;
 
     @Autowired
-    private StudentRepository stdRepository;
+    private StudyCenterRepository stcRepository;
 
-    @Autowired
-    private AttandanceRepository attRepository;
+//    @Autowired
+//    private AttendanceRepository attRepository;
 
-    @Autowired
-    private ResultRepository rstRepository;
+//    @Autowired
+//    private ResultRepository rstRepository;
 
-    @Autowired
-    private PaymentRepository pymRepository;
+//    @Autowired
+//    private PaymentRepository pymRepository;
 
     final private GroupMapper grpMapper = new GroupMapper();
 
-    final private PaymentMapper pymMapper = new PaymentMapper();
+//    final private PaymentMapper pymMapper = new PaymentMapper();
+
+    final private StudentMapper stdMapper = new StudentMapper();
+
+//    Pageable pageable = PageRequest.of(0, 10);
 
     public GroupDTOforRes createGroup(GroupDTOforReq groupDTOforReq) {
         return grpMapper.toDTO(grpRepository.save(
                 grpMapper.toModel(groupDTOforReq)));
+    }
+
+//    public Page<?> getGroupsByStudyCenterId(int teacher_id) {
+//        List<Group> groups = teachRepository.findById(teacher_id).get().getGroupList();
+//        int start = (int) pageable.getOffset();
+//        int end = Math.min((start + pageable.getPageSize()), groups.size());
+//        return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
+//    }
+
+    public List<?> getStudentsByGroupId(int groupId) {
+        return grpRepository.findById(groupId).get().getStudentList().stream()
+                .map(stdMapper::toDTO)
+                .toList();
+    }
+
+    public List<?> getStudentsByStudyCenterId(int study_center_id) {
+        return stcRepository.findById(study_center_id).get().getStudentList().stream()
+                .map(stdMapper::toDTO)
+                .toList();
     }
 
     public GroupDTOforRes assignTeachersToGroup(UserListAsNumber userListAsNumber, int groupId) throws AllExceptions.NoSuchElementException {
@@ -59,42 +83,42 @@ public class GroupService {
     public boolean isUserInGroup(Group group, UserDetails user) {
         return group.getTeacherList().contains(user);
     }
+//
+//    public GroupDTOforRes assignStudentToGroup(UserListAsNumber studentListAsNumber, int groupId) throws AllExceptions.NoSuchElementException {
+//        Group group = grpRepository.findById(groupId).get();
+//        List<Student> studentListFromReq = stdRepository.findAllById(studentListAsNumber.getTeacherList());
+//        studentListFromReq.stream()
+//                .filter(student -> isUserInGroup(group, student));
+//        List<Student> studentListFromGroup = group.getStudentList();
+//        studentListFromGroup.addAll(studentListFromReq);
+//        group.setStudentList(studentListFromGroup);
+//        return grpMapper.toDTO(grpRepository.save(group));
+//    }
 
-    public GroupDTOforRes assignStudentToGroup(UserListAsNumber studentListAsNumber, int groupId) throws AllExceptions.NoSuchElementException {
-        Group group = grpRepository.findById(groupId).get();
-        List<Student> studentListFromReq = stdRepository.findAllById(studentListAsNumber.getTeacherList());
-        studentListFromReq.stream()
-                .filter(student -> isUserInGroup(group, student));
-        List<Student> studentListFromGroup = group.getStudentList();
-        studentListFromGroup.addAll(studentListFromReq);
-        group.setStudentList(studentListFromGroup);
-        return grpMapper.toDTO(grpRepository.save(group));
-    }
+//    public List<Attendance> markAttendance(List<AttendanceDTOforReq> attendanceDTOforReqList, int groupId) throws AllExceptions.NoSuchElementException {
+//        Group group = grpRepository.findById(groupId).get();
+//        List<Attendance> attendanceList = new ArrayList<>();
+//        attendanceDTOforReqList.forEach(attandance -> attendanceList.add(Attendance.builder()
+//                .status(attandance.getStatus())
+//                .group(group)
+//                .student((stdRepository.findById(attandance.getStudent_id()).get()))
+//                .build()));
+//        return attRepository.saveAll(attendanceList);
+//    }
 
-    public List<Attandance> markAttandance(List<AttandanceDTOforReq> attandanceDTOforReqList, int groupId) throws AllExceptions.NoSuchElementException {
-        Group group = grpRepository.findById(groupId).get();
-        List<Attandance> attandanceList = new ArrayList<>();
-        attandanceDTOforReqList.forEach(attandance -> attandanceList.add(Attandance.builder()
-                .status(attandance.getStatus())
-                .group(group)
-                .student((stdRepository.findById(attandance.getStudent_id()).get()))
-                .build()));
-        return attRepository.saveAll(attandanceList);
-    }
+//    public Payment markPayment(PaymentDTOforReq paymentDTOforReq) {
+//        return pymRepository.save(pymMapper.toModel(
+//                paymentDTOforReq, stdRepository.findById(paymentDTOforReq.getStudent_id()).get()));
+//    }
 
-    public Payment markPayment(PaymentDTOforReq paymentDTOforReq) {
-        return pymRepository.save(pymMapper.toModel(
-                paymentDTOforReq, stdRepository.findById(paymentDTOforReq.getStudent_id()).get()));
-    }
-
-    public List<Result> postResult(List<ResultDTOforReq> resultDTOforReqList, int groupId) {
-        Group group = grpRepository.findById(groupId).get();
-        List<Result> resultList = new ArrayList<>();
-        resultDTOforReqList.forEach(result -> resultList.add(Result.builder()
-                .grade(result.getGrade())
-                .group(group)
-                .student((stdRepository.findById(result.getStudent_id()).get()))
-                .build()));
-        return rstRepository.saveAll(resultList);
-    }
+//    public List<Result> postResult(List<ResultDTOforReq> resultDTOforReqList, int groupId) {
+//        Group group = grpRepository.findById(groupId).get();
+//        List<Result> resultList = new ArrayList<>();
+//        resultDTOforReqList.forEach(result -> resultList.add(Result.builder()
+//                .grade(result.getGrade())
+//                .group(group)
+//                .student((stdRepository.findById(result.getStudent_id()).get()))
+//                .build()));
+//        return rstRepository.saveAll(resultList);
+//    }
 }

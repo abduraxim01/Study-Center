@@ -17,6 +17,8 @@ import java.util.Set;
 @Builder
 public class GroupDTOforRes {
 
+    private int id;
+
     private String name;
 
     private LocalDate created_at;

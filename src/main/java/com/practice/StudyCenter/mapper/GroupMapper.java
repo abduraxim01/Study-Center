@@ -20,6 +20,7 @@ public class GroupMapper {
 
     public GroupDTOforRes toDTO(Group group) {
         return GroupDTOforRes.builder()
+                .id(group.getId())
                 .name(group.getName())
                 .time(group.getTime())
                 .days(group.getDays())

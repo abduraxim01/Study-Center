@@ -2,7 +2,7 @@ package com.practice.StudyCenter.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.practice.StudyCenter.model.attandance.Attandance;
+import com.practice.StudyCenter.model.attendance.Attendance;
 import com.practice.StudyCenter.model.privileges.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -57,7 +57,7 @@ public class Student implements UserDetails {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Attandance> attandanceList;
+    private List<Attendance> attendanceList;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
