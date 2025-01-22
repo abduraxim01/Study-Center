@@ -9,5 +9,5 @@ public enum Permission {
 
     CREATE_ADMIN,
 
-    MODIFY_ADMIN;
+    MODIFY_ADMIN,
 }

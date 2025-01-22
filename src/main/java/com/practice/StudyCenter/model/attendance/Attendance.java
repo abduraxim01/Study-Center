@@ -1,4 +1,4 @@
-package com.practice.StudyCenter.model.attandance;
+package com.practice.StudyCenter.model.attendance;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.practice.StudyCenter.model.Group;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Attandance {
+public class Attendance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Attandance {
     @CreationTimestamp
     private LocalDate localDate;
 
-    private AttandanceStatus status;
+    private AttendanceStatus status;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
