@@ -1,7 +1,7 @@
 package com.practice.StudyCenter.mapper;
 
-import com.practice.StudyCenter.DTO.requestDTO.PaymentDTOforReq;
-import com.practice.StudyCenter.DTO.response.PaymentDTOforRes;
+import com.practice.StudyCenter.DTO.requestDTO.PaymentDTOForRequest;
+import com.practice.StudyCenter.DTO.responseDTO.PaymentDTOForResponse;
 import com.practice.StudyCenter.model.Payment;
 import com.practice.StudyCenter.model.Student;
 
@@ -9,21 +9,22 @@ import java.util.List;
 
 public class PaymentMapper {
 
-    public Payment toModel(PaymentDTOforReq paymentDTOforReq, Student student) {
+    public Payment toModel(PaymentDTOForRequest paymentDTOForRequest, Student student) {
         return Payment.builder()
-                .amount(paymentDTOforReq.getAmount())
+                .amount(paymentDTOForRequest.getAmount())
                 .student(student)
                 .build();
     }
 
-    public PaymentDTOforRes toDTO(Payment payment) {
-        return PaymentDTOforRes.builder()
+    public PaymentDTOForResponse toDTO(Payment payment) {
+        return PaymentDTOForResponse.builder()
+                .id(payment.getId())
                 .amount(payment.getAmount())
                 .payment_time(payment.getPayment_time())
                 .build();
     }
 
-    public List<PaymentDTOforRes> toDTO(List<Payment> paymentList) {
+    public List<PaymentDTOForResponse> toDTO(List<Payment> paymentList) {
         if (paymentList.isEmpty()) return null;
         return paymentList.stream()
                 .map(this::toDTO)

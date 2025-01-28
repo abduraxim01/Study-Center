@@ -1,16 +1,12 @@
 package com.practice.StudyCenter.mapper;
 
-import com.practice.StudyCenter.DTO.requestDTO.TeacherDTOforReq;
-import com.practice.StudyCenter.DTO.response.TeacherDTOforRes;
-import com.practice.StudyCenter.model.privileges.Permission;
+import com.practice.StudyCenter.DTO.requestDTO.TeacherDTOForRequest;
+import com.practice.StudyCenter.DTO.responseDTO.TeacherDTOForResponse;
 import com.practice.StudyCenter.model.privileges.Role;
 import com.practice.StudyCenter.model.StudyCenter;
 import com.practice.StudyCenter.model.Teacher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TeacherMapper {
 
@@ -18,20 +14,21 @@ public class TeacherMapper {
 
     final private GroupMapper grpMapper = new GroupMapper();
 
-    public Teacher toModel(TeacherDTOforReq teacherDTOforReq, StudyCenter studyCenter) {
+    public Teacher toModel(TeacherDTOForRequest teacherDTOForRequest, StudyCenter studyCenter) {
         return Teacher.builder()
-                .name(teacherDTOforReq.getName())
-                .surname(teacherDTOforReq.getSurname())
-                .username(teacherDTOforReq.getUsername())
-                .password(encoder.encode(teacherDTOforReq.getPassword()))
-                .phoneNumber(teacherDTOforReq.getPhoneNumber())
+                .name(teacherDTOForRequest.getName())
+                .surname(teacherDTOForRequest.getSurname())
+                .username(teacherDTOForRequest.getUsername())
+                .password(encoder.encode(teacherDTOForRequest.getPassword()))
+                .phoneNumber(teacherDTOForRequest.getPhoneNumber())
                 .studyCenter(studyCenter)
                 .role(Role.ADMIN)
                 .build();
     }
 
-    public TeacherDTOforRes toDTO(Teacher teacher) {
-        return TeacherDTOforRes.builder()
+    public TeacherDTOForResponse toDTO(Teacher teacher) {
+        return TeacherDTOForResponse.builder()
+                .id(teacher.getId())
                 .name(teacher.getName())
                 .surname(teacher.getSurname())
                 .username(teacher.getUsername())

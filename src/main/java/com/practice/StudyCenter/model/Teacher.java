@@ -69,7 +69,6 @@ public class Teacher implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         Set<SimpleGrantedAuthority> authorities = new HashSet<>(
                 Set.of(new SimpleGrantedAuthority("ROLE_" + role.name())));
 

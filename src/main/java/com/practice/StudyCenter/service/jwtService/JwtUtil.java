@@ -20,10 +20,10 @@ public class JwtUtil {
     final private String SECRET_KEY = "LaudateomnesgenteslaudateMagnificatinseculaEtanimamealaudateMagnificatinseculaHappynationlivininahappynationAddthistothedependenciesblockinyourbuildLetmeknowifyouneedfurtherassistance";
 
     public String encode(String username, Collection<? extends GrantedAuthority> authorities) {
+        authorities.removeIf(authority -> !authority.getAuthority().startsWith("ROLE_"));
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("Created by: ", "https://abduraxim.uz");
-        extraClaims.put("Username", username);
-        extraClaims.put("Authorities", authorities.toString());
+        extraClaims.put("Role", authorities.toString().substring(6,authorities.toString().length()-1));
 
         return Jwts
                 .builder()
