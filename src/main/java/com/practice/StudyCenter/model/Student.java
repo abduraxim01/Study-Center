@@ -3,6 +3,8 @@ package com.practice.StudyCenter.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.practice.StudyCenter.model.attendance.Attendance;
+import com.practice.StudyCenter.model.homework.Homework;
+import com.practice.StudyCenter.model.privileges.Permission;
 import com.practice.StudyCenter.model.privileges.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -14,7 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -47,8 +51,7 @@ public class Student implements UserDetails {
     @CreationTimestamp
     private LocalDate created_at;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private boolean isAvailable;
 
     @ManyToOne
     @JoinColumn(name = "study_center_id")
@@ -74,8 +77,31 @@ public class Student implements UserDetails {
     @JsonManagedReference
     private List<Payment> paymentList;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Homework> homeworkList;
+
+    @Override
+    public boolean isEnabled() {
+        return isAvailable;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Set<Permission> permissions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>(
+                Set.of(new SimpleGrantedAuthority("ROLE_" + role.name())));
+
+        if (permissions != null) {
+            authorities.addAll(permissions.stream()
+                    .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                    .toList());
+        }
+        return authorities;
     }
 }

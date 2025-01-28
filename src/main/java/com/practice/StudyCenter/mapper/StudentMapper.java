@@ -1,33 +1,39 @@
 package com.practice.StudyCenter.mapper;
 
-import com.practice.StudyCenter.DTO.requestDTO.StudentDTOforReq;
-import com.practice.StudyCenter.DTO.response.StudentDTOforRes;
+import com.practice.StudyCenter.DTO.requestDTO.StudentDTOForRequest;
+import com.practice.StudyCenter.DTO.responseDTO.StudentDTOForResponse;
 import com.practice.StudyCenter.model.privileges.Role;
 import com.practice.StudyCenter.model.Student;
 import com.practice.StudyCenter.model.StudyCenter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class StudentMapper {
 
-    public Student toModel(StudentDTOforReq studentDTOforReq, StudyCenter studyCenter) {
+    final private PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    public Student toModel(StudentDTOForRequest studentDTOForRequest, StudyCenter studyCenter) {
         return Student.builder()
-                .name(studentDTOforReq.getName())
-                .surname(studentDTOforReq.getSurname())
-                .username(studentDTOforReq.getUsername())
-                .password(studentDTOforReq.getPassword())
-                .nameOfParent(studentDTOforReq.getNameOfParent())
-                .phoneNumber(studentDTOforReq.getPhoneNumber())
+                .name(studentDTOForRequest.getName())
+                .surname(studentDTOForRequest.getSurname())
+                .username(studentDTOForRequest.getUsername())
+                .password(encoder.encode(studentDTOForRequest.getPassword()))
+                .nameOfParent(studentDTOForRequest.getNameOfParent())
+                .phoneNumber(studentDTOForRequest.getPhoneNumber())
                 .studyCenter(studyCenter)
                 .role(Role.USER)
+                .isAvailable(true)
                 .build();
     }
 
-    public StudentDTOforRes toDTO(Student student) {
-        return StudentDTOforRes.builder()
+    public StudentDTOForResponse toDTO(Student student) {
+        return StudentDTOForResponse.builder()
                 .name(student.getName())
                 .surname(student.getSurname())
                 .nameOfParent(student.getNameOfParent())
                 .phoneNumber(student.getPhoneNumber())
                 .created_at(student.getCreated_at())
+                .isAvailable(student.isAvailable())
                 .build();
     }
 

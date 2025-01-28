@@ -6,6 +6,7 @@ import com.practice.StudyCenter.service.GroupService;
 import com.practice.StudyCenter.service.StudentService;
 import com.practice.StudyCenter.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,11 @@ public class TeacherController {
     @Autowired
     private StudentService stdService;
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('CREATE_ADMIN')")
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('ADMIN_CREATE')")
     @PostMapping(value = "/createTeacher/{study_center_id}")
-    public ResponseEntity<Object> createTeacher(@RequestBody TeacherDTOforReq teacherDTOforReq, @PathVariable int study_center_id) {
+    public ResponseEntity<Object> createTeacher(@RequestBody TeacherDTOForRequest teacherDTOForRequest, @PathVariable int study_center_id) {
         try {
-            return ResponseEntity.ok(teachService.createTeacher(teacherDTOforReq, study_center_id));
+            return ResponseEntity.ok(teachService.createTeacher(teacherDTOForRequest, study_center_id));
         } catch (AllExceptions.IllegalArgumentException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         } catch (AllExceptions.UsernameAlreadyTakenException exception) {
@@ -43,12 +44,14 @@ public class TeacherController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('MODIFY_ADMIN')")
-    @PutMapping(value = "/setPermissions/{user_id}")
-    public ResponseEntity<?> setPermissions(@RequestBody Set<String> permissions, @PathVariable int user_id) {
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('ADMIN_MODIFY')")
+    @PutMapping(value = "/setPermissions/{teacher_id}")
+    public ResponseEntity<?> setPermissions(@RequestBody Set<String> permissions, @PathVariable int teacher_id) {
         try {
-            return ResponseEntity.ok(teachService.setPermission(permissions, user_id));
+            return ResponseEntity.ok(teachService.setPermission(permissions, teacher_id));
         } catch (AllExceptions.IllegalArgumentException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }
@@ -69,14 +72,32 @@ public class TeacherController {
 //        return ResponseEntity.ok(teachService.getGroupsByStudyCenterId(study_center_id));
 //    }
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN')")
-    @PostMapping(value = "/assignTeachersToGroup/{groupId}")
-    public ResponseEntity<?> assignTeachersToGroup(@RequestBody UserListAsNumber userListAsNumber, @PathVariable int groupId) {
+    @PreAuthorize(value = "hasAnyRole('ADMIN')  and hasAuthority('GROUP_UPDATE')")
+    @PutMapping(value = "/assignTeachersToGroup/{groupId}")
+    public ResponseEntity<String> assignTeachersToGroup(@RequestBody IdsList idsList, @PathVariable int groupId) {
         try {
-            return ResponseEntity.ok(grpService.assignTeachersToGroup(userListAsNumber, groupId));
+            grpService.assignTeachersToGroup(idsList, groupId);
+            return ResponseEntity.ok("O'zgartirishlar muvafaqqiyatli saqlandi");
         } catch (AllExceptions.InvalidJwtException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         } catch (AllExceptions.NoSuchElementException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.EntityNotFoundException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('ADMIN','SUPERADMIN') and hasAuthority('GROUP_UPDATE')")
+    @PutMapping(value = "/assignStudentsToGroup/{groupId}")
+    public ResponseEntity<String> assignStudentsToGroup(@RequestBody IdsList idsList, @PathVariable int groupId) {
+        try {
+            stdService.assignStudentToGroup(idsList, groupId);
+            return ResponseEntity.ok("O'zgartirishlar muvafaqqiyatli saqlandi");
+        } catch (AllExceptions.InvalidJwtException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.NoSuchElementException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }
@@ -97,27 +118,25 @@ public class TeacherController {
 //        }
 //    }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('STUDENT_SHOW')")
     @GetMapping(value = "/getStudentsByGroupId/{groupId}")
     public ResponseEntity<?> getStudentsByGroupId(@PathVariable int groupId) {
-        return ResponseEntity.ok(grpService.getStudentsByGroupId(groupId));
-    }
-
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN')")
-    @GetMapping(value = "/getStudentsByStudyCenterId/{study_center_id}")
-    public ResponseEntity<?> getStudentsByStudyCenterId(@PathVariable int study_center_id) {
-        return ResponseEntity.ok(grpService.getStudentsByStudyCenterId(study_center_id));
-    }
-
-    @PreAuthorize(value = "hasAnyRole('ADMIN')")
-    @PostMapping(value = "/assignStudentsToGroup/{groupId}")
-    public ResponseEntity<?> assignStudentsToGroup(@RequestBody UserListAsNumber userListAsNumber, @PathVariable int groupId) {
         try {
-            return ResponseEntity.ok(stdService.assignStudentToGroup(userListAsNumber, groupId));
-        } catch (AllExceptions.InvalidJwtException exception) {
+            return ResponseEntity.ok(stdService.getStudentsByGroupId(groupId));
+        } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
-        } catch (AllExceptions.NoSuchElementException exception) {
+        }
+    }
+
+    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('STUDENT_SHOW')")
+    @GetMapping(value = "/getStudentsByStudyCenterId/{studyCenterId} ")
+    public ResponseEntity<?> getStudentsByStudyCenterId(@PathVariable int studyCenterId) {
+        try {
+            return ResponseEntity.ok(stdService.getStudentsByStudyCenterId(studyCenterId));
+        } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (Exception e) {
+            return new ResponseEntity<>("Noma'lum sabab tufayli xato", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

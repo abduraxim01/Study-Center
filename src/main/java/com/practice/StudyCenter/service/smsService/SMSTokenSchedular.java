@@ -30,7 +30,7 @@ public class SMSTokenSchedular {
     final private Logger logger = LogManager.getLogger(SMSTokenSchedular.class);
 
     //    @Scheduled(cron = "50 17 12 * * ?")
-    @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
+//    @Scheduled(fixedRate = 1000 * 60 * 60 * 24)   shu qatordan foydalaniladi
     public void smsTokenGenerateTask() throws IOException {
         if (SMS_TOKEN == null || isJwtExpired(SMS_TOKEN)) {
             Response response = null;

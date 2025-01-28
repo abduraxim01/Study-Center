@@ -7,7 +7,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Permission {
 
-    CREATE_ADMIN,
+    ADMIN_CREATE,
 
-    MODIFY_ADMIN,
+    ADMIN_MODIFY,
+
+    STUDENT_SHOW,
+    STUDENT_CREATE,
+    STUDENT_RESTORE,
+    STUDENT_DELETE,
+    STUDENT_SOFT_DELETE,
+
+    GROUP_SHOW,
+    GROUP_CREATE,
+    GROUP_UPDATE,
+    GROUP_RESTORE,
+    GROUP_DELETE,
+    GROUP_SOFT_DELETE,
+
+    PAYMENT_CREATE,
+    PAYMENT_SHOW,
+    PAYMENT_UPDATE,
+    PAYMENT_SOFT_DELETE,
+
+    RESULT_CREATE,
+    RESULT_SHOW,
+    RESULT_UPDATE,
+    RESULT_SOFT_DELETE
 }

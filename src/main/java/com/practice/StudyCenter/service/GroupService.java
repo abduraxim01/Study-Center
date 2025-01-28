@@ -1,19 +1,16 @@
 package com.practice.StudyCenter.service;
 
 import com.practice.StudyCenter.DTO.requestDTO.*;
-import com.practice.StudyCenter.DTO.response.GroupDTOforRes;
+import com.practice.StudyCenter.DTO.responseDTO.GroupDTOForResponse;
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.mapper.GroupMapper;
-import com.practice.StudyCenter.mapper.PaymentMapper;
 import com.practice.StudyCenter.mapper.StudentMapper;
 import com.practice.StudyCenter.model.*;
-import com.practice.StudyCenter.model.attendance.Attendance;
 import com.practice.StudyCenter.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,6 +24,9 @@ public class GroupService {
 
     @Autowired
     private StudyCenterRepository stcRepository;
+
+    @Autowired
+    private StudentRepository stdRepository;
 
 //    @Autowired
 //    private AttendanceRepository attRepository;
@@ -45,11 +45,16 @@ public class GroupService {
 
 //    Pageable pageable = PageRequest.of(0, 10);
 
-    public GroupDTOforRes createGroup(GroupDTOforReq groupDTOforReq) {
+    public GroupDTOForResponse createGroup(GroupDTOForRequest groupDTOForRequest, int studyCenterId) {
+        StudyCenter studyCenter = stcRepository.findById(studyCenterId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("StudyCenter topilmadi Id: " + studyCenterId));
         return grpMapper.toDTO(grpRepository.save(
-                grpMapper.toModel(groupDTOforReq)));
+                grpMapper.toModel(groupDTOForRequest, studyCenter)));
     }
 
+    public List<GroupDTOForResponse> getGroupsByStudentId(int student_id) {
+        Student student = stdRepository.findById(student_id).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Student topilmadi Id: " + student_id));
+        return grpMapper.toDTO(student.getGroupList());
+    }
 //    public Page<?> getGroupsByStudyCenterId(int teacher_id) {
 //        List<Group> groups = teachRepository.findById(teacher_id).get().getGroupList();
 //        int start = (int) pageable.getOffset();
@@ -57,27 +62,33 @@ public class GroupService {
 //        return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
 //    }
 
-    public List<?> getStudentsByGroupId(int groupId) {
-        return grpRepository.findById(groupId).get().getStudentList().stream()
-                .map(stdMapper::toDTO)
-                .toList();
+    public GroupDTOForResponse deleteGroup(int groupId) {
+        Group group = grpRepository.findById(groupId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Group topilmadi Id: " + groupId));
+        group.setAvailable(false);
+        return grpMapper.toDTO(grpRepository.save(group));
     }
 
-    public List<?> getStudentsByStudyCenterId(int study_center_id) {
-        return stcRepository.findById(study_center_id).get().getStudentList().stream()
-                .map(stdMapper::toDTO)
-                .toList();
+    public GroupDTOForResponse restoreGroup(int groupId) {
+        Group group = grpRepository.findById(groupId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Group topilmadi Id: " + groupId));
+        group.setAvailable(true);
+        return grpMapper.toDTO(grpRepository.save(group));
     }
 
-    public GroupDTOforRes assignTeachersToGroup(UserListAsNumber userListAsNumber, int groupId) throws AllExceptions.NoSuchElementException {
-        Group group = grpRepository.findById(groupId).get();
-        List<Teacher> teacherListFromReq = teachRepository.findAllById(userListAsNumber.getTeacherList());
+    public void softDeleteGroup(int groupId) {
+        grpRepository.findById(groupId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Group topilmadi Id: " + groupId));
+        grpRepository.deleteById(groupId);
+    }
+
+
+    public void assignTeachersToGroup(IdsList idsList, int groupId) throws AllExceptions.NoSuchElementException {
+        Group group = grpRepository.findById(groupId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Group topilmadi Id: " + groupId));
+        List<Teacher> teacherListFromReq = teachRepository.findAllById(idsList.getIdsList());
         teacherListFromReq.stream()
                 .filter(teacher -> isUserInGroup(group, teacher));
         List<Teacher> teacherListFromGroup = group.getTeacherList();
         teacherListFromGroup.addAll(teacherListFromReq);
         group.setTeacherList(teacherListFromGroup);
-        return grpMapper.toDTO(grpRepository.save(group));
+        grpRepository.save(group);
     }
 
     public boolean isUserInGroup(Group group, UserDetails user) {

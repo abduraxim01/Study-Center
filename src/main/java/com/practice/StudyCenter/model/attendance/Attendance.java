@@ -24,6 +24,7 @@ public class Attendance {
     @CreationTimestamp
     private LocalDate localDate;
 
+    @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
     @ManyToOne
