@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum Permission {
 
     ADMIN_CREATE,
-
     ADMIN_MODIFY,
+    ADMIN_SHOW,
 
     STUDENT_SHOW,
     STUDENT_CREATE,
@@ -32,5 +32,15 @@ public enum Permission {
     RESULT_CREATE,
     RESULT_SHOW,
     RESULT_UPDATE,
-    RESULT_SOFT_DELETE
+    RESULT_SOFT_DELETE,
+
+    HOMEWORK_CREATE,
+    HOMEWORK_SHOW,
+    HOMEWORK_UPDATE,
+    HOMEWORK_SOFT_DELETE,
+
+    ATTENDANCE_CREATE,
+    ATTENDANCE_SHOW,
+    ATTENDANCE_UPDATE,
+    ATTENDANCE_SOFT_DELETE,
 }

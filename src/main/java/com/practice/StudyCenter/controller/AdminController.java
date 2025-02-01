@@ -19,9 +19,9 @@ public class AdminController {
     @Autowired
     private StudyCenterRepository stdRepository;
 
-    @PreAuthorize(value = "hasRole('SUPERADMIN')")
+    @PreAuthorize(value = "hasRole('SUPERADMIN') and hasAuthority('ADMIN_CREATE')")
     @PostMapping(value = "/createStudyCenter")
-    public ResponseEntity<Object> createStudyCenter(@RequestBody StudyCenterDTOForRequest studyCenterDTO) {
+    public ResponseEntity<?> createStudyCenter(@RequestBody StudyCenterDTOForRequest studyCenterDTO) {
         try {
             return ResponseEntity.ok(adminService.createStudyCenter(studyCenterDTO));
         } catch (AllExceptions.NullPointerException exception) {
@@ -33,8 +33,13 @@ public class AdminController {
         }
     }
 
-//    @GetMapping(value = "/all")
-//    public List<StudyCenter> get(){
-//     return stdRepository.findAll();
-//    }
+    @PreAuthorize(value = "hasRole('SUPERADMIN') and hasAuthority('ADMIN_SHOW')")
+    @GetMapping(value = "/getAllStudyCenters")
+    public ResponseEntity<?> getAllStudyCenters() {
+        try {
+            return ResponseEntity.ok(adminService.getAllStudyCenters());
+        } catch (AllExceptions.InternalServerError exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        }
+    }
 }

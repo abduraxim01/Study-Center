@@ -12,23 +12,26 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminService {
 
-    final private Logger logger = LogManager.getLogger(AdminService.class);
-
-    private StudyCenterMapper studyCenterMapper = new StudyCenterMapper();
-
-    private StudyCenterRepository repository;
+    @Autowired
+    private StudyCenterRepository stcRepository;
 
     @Autowired
     private TeacherService teachService;
 
+    private StudyCenterMapper stcMapper = new StudyCenterMapper();
+
+    final private Logger logger = LogManager.getLogger(AdminService.class);
+
     @Autowired
-    public AdminService(StudyCenterRepository repository) {
-        this.repository = repository;
+    public AdminService(StudyCenterRepository stcRepository) {
+        this.stcRepository = stcRepository;
     }
 
     public StudyCenterDTOForResponse createStudyCenter(StudyCenterDTOForRequest studyCenterDTOForRequest) {
@@ -41,6 +44,10 @@ public class AdminService {
             throw new AllExceptions.IllegalArgumentException("Telefon nomer xato: " + studyCenterDTOForRequest.getPhoneNumber());
         }
         logger.info("Yangi o'quv markaz qo'shildi: from addStudyCenter Name: " + studyCenterDTOForRequest.getName());
-        return studyCenterMapper.toDTO(repository.save(studyCenterMapper.toModel(studyCenterDTOForRequest)));
+        return stcMapper.toDTO(stcRepository.save(stcMapper.toModel(studyCenterDTOForRequest)));
+    }
+
+    public List<StudyCenterDTOForResponse> getAllStudyCenters() {
+        return stcMapper.toDTO(stcRepository.findAll());
     }
 }

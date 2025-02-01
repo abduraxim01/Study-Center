@@ -9,6 +9,7 @@ public class AttendanceMapper {
 
     public AttendanceDTOForResponse toDTO(Attendance attendance) {
         return AttendanceDTOForResponse.builder()
+                .id(attendance.getId())
                 .name(attendance.getStudent().getName())
                 .localDate(attendance.getLocalDate())
                 .status(attendance.getStatus())

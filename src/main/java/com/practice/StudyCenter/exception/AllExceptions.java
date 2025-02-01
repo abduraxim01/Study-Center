@@ -51,6 +51,15 @@ public class AllExceptions {
     }
 
     @Getter
+    public static class SignatureException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        public SignatureException(String message) {
+            super(message);
+        }
+    }
+
+    @Getter
     public static class EntityNotFoundException extends RuntimeException {
         private final HttpStatus status = HttpStatus.NOT_FOUND;
 
@@ -78,10 +87,28 @@ public class AllExceptions {
     }
 
     @Getter
-    public static class Exception extends RuntimeException {
+    public static class MalformedJwtException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.BAD_GATEWAY;
+
+        public MalformedJwtException(String message) {
+            super(message);
+        }
+    }
+
+    @Getter
+    public static class InternalServerError extends RuntimeException {
         private final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        public Exception(String message) {
+        public InternalServerError(String message) {
+            super(message);
+        }
+    }
+
+    @Getter
+    public static class AccountExpiredException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.FORBIDDEN;
+
+        public AccountExpiredException(String message) {
             super(message);
         }
     }

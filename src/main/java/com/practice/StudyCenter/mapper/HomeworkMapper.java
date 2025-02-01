@@ -9,11 +9,11 @@ public class HomeworkMapper {
 
     public HomeworkDTOForResponse toDTO(Homework homework) {
         return HomeworkDTOForResponse.builder()
+                .id(homework.getId())
                 .name(homework.getStudent().getName())
                 .status(homework.getStatus())
                 .time(homework.getLocalDate())
                 .build();
-
     }
 
     public List<HomeworkDTOForResponse> toDTO(List<Homework> homeworkList) {

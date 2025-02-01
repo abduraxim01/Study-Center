@@ -27,6 +27,8 @@ public class Configuration {
     @Autowired
     private JwtFilter jwtFilter;
 
+    final private String ADMIN_API = "/api/admin";
+
     final private String TEACHER_API = "/api/teacher";
 
     final private String ATTENDANCE_API = "/api/attendance";
@@ -47,37 +49,43 @@ public class Configuration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requestsConfigurer -> {
                     requestsConfigurer
-                            .requestMatchers("/api/admin/createStudyCenter").hasRole("SUPERADMIN")
+                            .requestMatchers(ADMIN_API + "/createStudyCenter").hasRole("SUPERADMIN")
+                            .requestMatchers(ADMIN_API + "/getAllStudyCenters").hasRole("SUPERADMIN")
                             .requestMatchers(TEACHER_API + "/createTeacher/{study_center_id}").hasAnyRole("ADMIN", "SUPERADMIN")
                             .requestMatchers(TEACHER_API + "/setPermissions/{teacher_id}").hasAnyRole("ADMIN", "SUPERADMIN")
-                            .requestMatchers(TEACHER_API + "/getStudentsByGroupId/{groupId}").hasAnyRole("ADMIN", "SUPERADMIN")
+                            .requestMatchers(TEACHER_API + "/getStudentsByGroupId/{groupId}").hasRole("ADMIN")
                             .requestMatchers(TEACHER_API + "/getStudentsByStudyCenterId/{studyCenterId}").hasAnyRole("ADMIN", "SUPERADMIN")
-                            .requestMatchers(TEACHER_API + "/assignStudentsToGroup/{groupId}").hasAnyRole("ADMIN", "SUPERADMIN")
+                            .requestMatchers(TEACHER_API + "/assignStudentsToGroup/{groupId}").hasRole("ADMIN")
                             .requestMatchers(TEACHER_API + "/assignTeachersToGroup/{groupId}").hasRole("ADMIN")
                             .requestMatchers(GROUP_API + "/createGroup/{study_center_id}").hasRole("ADMIN")
                             .requestMatchers(GROUP_API + "/getGroupsByStudyCenterId/{study_center_id}").hasAnyRole("ADMIN", "SUPERADMIN")
-                            .requestMatchers(GROUP_API + "/deleteGroup/{group_id}").hasAnyRole("ADMIN")
-                            .requestMatchers(GROUP_API + "/restoreGroup/{group_id}").hasAnyRole("ADMIN")
-                            .requestMatchers(GROUP_API + "/softDeleteGroup/{group_id}").hasAnyRole("ADMIN")
+                            .requestMatchers(GROUP_API + "/deleteGroup/{group_id}").hasRole("ADMIN")
+                            .requestMatchers(GROUP_API + "/restoreGroup/{group_id}").hasRole("ADMIN")
+                            .requestMatchers(GROUP_API + "/softDeleteGroup/{group_id}").hasRole("ADMIN")
                             .requestMatchers(STUDENT_API + "/createStudent/{study_center_id}").hasRole("ADMIN")
-                            .requestMatchers(STUDENT_API + "/getGroupsByStudentId/{student_id}").hasAnyRole("USER", "SUPERADMIN")
+                            .requestMatchers(STUDENT_API + "/getGroupsByStudentId/{student_id}").hasRole("USER")
                             .requestMatchers(STUDENT_API + "/getPayments/{student_id}").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers(STUDENT_API + "/restoreStudent/{student_id}").hasAnyRole("ADMIN", "SUPERADMIN")
-                            .requestMatchers(STUDENT_API + "/deleteStudent/{student_id}").hasAnyRole("ADMIN", "SUPERADMIN")
-                            .requestMatchers(STUDENT_API + "/softDeleteStudent/{student_id}").hasAnyRole("ADMIN", "SUPERADMIN")
+                            .requestMatchers(STUDENT_API + "/restoreStudent/{student_id}").hasRole("ADMIN")
+                            .requestMatchers(STUDENT_API + "/deleteStudent/{student_id}").hasRole("ADMIN")
+                            .requestMatchers(STUDENT_API + "/softDeleteStudent/{student_id}").hasRole("ADMIN")
                             .requestMatchers(PAYMENT_API + "/markPayment").hasRole("ADMIN")
                             .requestMatchers(PAYMENT_API + "/softDeletePayment/{paymentId}").hasRole("ADMIN")
                             .requestMatchers(PAYMENT_API + "/updatePayment/{paymentId}").hasRole("ADMIN")
                             .requestMatchers(ATTENDANCE_API + "/markAttendance/{groupId}").hasRole("ADMIN")
                             .requestMatchers(ATTENDANCE_API + "/getAttendanceByGroupId/{groupId}").hasRole("ADMIN")
                             .requestMatchers(ATTENDANCE_API + "/getAttendanceByGroupAndStudentId/{group_id}/{student_id}").hasAnyRole("ADMIN", "USER")
+                            .requestMatchers(ATTENDANCE_API + "/updateAttendance/{attendanceId}").hasAnyRole("ADMIN")
+                            .requestMatchers(ATTENDANCE_API + "/softDeleteAttendance/{attendanceId}").hasRole("ADMIN")
                             .requestMatchers(RESULT_API + "/postResult/{groupId}").hasRole("ADMIN")
-                            .requestMatchers(RESULT_API + "/getResultByGroupId/{groupId}").hasAnyRole("ADMIN","USER")
+                            .requestMatchers(RESULT_API + "/getResultByGroupId/{groupId}").hasAnyRole("ADMIN", "USER")
                             .requestMatchers(RESULT_API + "/softDeleteResult").hasRole("ADMIN")
                             .requestMatchers(RESULT_API + "/updateResult").hasRole("ADMIN")
                             .requestMatchers(HOMEWORK_API + "/postHomework/{groupId}").hasRole("ADMIN")
                             .requestMatchers(HOMEWORK_API + "/getHomeworksByGroupId/{groupId}").hasRole("ADMIN")
-                             .requestMatchers("/api/login").permitAll();
+                            .requestMatchers(HOMEWORK_API + "/updateHomework/{homeworkId}").hasRole("ADMIN")
+                            .requestMatchers(HOMEWORK_API + "/softDeleteHomework/{homeworkId}").hasRole("ADMIN")
+                            .requestMatchers(HOMEWORK_API + "/getHomeworksByGroupAndStudentId/{groupId}/{studentId}").hasAnyRole("ADMIN", "USER")
+                            .requestMatchers("/api/login").permitAll();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
