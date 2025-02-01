@@ -20,7 +20,9 @@ public class Login {
             return ResponseEntity.ok(authService.login(loginForRequest));
         } catch (AllExceptions.UsernameNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
-        }   catch (AllExceptions.IllegalArgumentException exception) {
+        } catch (AllExceptions.IllegalArgumentException exception) {
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
+        } catch (AllExceptions.AccountExpiredException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
     }

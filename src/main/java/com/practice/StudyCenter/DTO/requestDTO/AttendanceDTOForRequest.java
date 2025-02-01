@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class AttendanceDTOForRequest {
 
-    private AttendanceStatus status;
+    private String status;
 
     private Integer student_id;
 }

@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HomeworkRepository extends JpaRepository<Homework, Integer> {
+
+    boolean existsById(int homeworkId);
 }
+

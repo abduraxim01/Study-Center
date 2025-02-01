@@ -22,6 +22,7 @@ import java.util.*;
 
 @Service
 public class AuthService implements UserDetailsService {
+
     @Autowired
     private TeacherRepository teachRepository;
 
@@ -42,15 +43,20 @@ public class AuthService implements UserDetailsService {
         Student student = stdRepository.findStudentByUsername(username);
         if (student != null) return student;
 
-        throw new AllExceptions.UsernameNotFoundException("Foydalanuvchi topilmadi: from loadByUsername");
+        logger.error("Foydalanuvchi topilmadi Username: {}", username);
+        throw new AllExceptions.UsernameNotFoundException("Foydalanuvchi topilmadi Username: " + username);
     }
 
     public LoginForResponse login(LoginForRequest login) {
+
         UserDetails user = loadUserByUsername(login.getUsername());
-        String role = null;
+
+        String role = "";
         Map<String, List<String>> permissionsMap = new HashMap<>();
+        int studyCenterId = 9999;
+
         if (encoder.matches(login.getPassword(), user.getPassword())) {
-            logger.info("Username: {} muvafaqqiyatli login qildi", user.getUsername());
+
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
             int index;
             String authorityName;
@@ -63,14 +69,31 @@ public class AuthService implements UserDetailsService {
                 } else role = authorityName.substring(index + 1);
             }
 
+            if (role.equals("ADMIN"))
+                studyCenterId = teachRepository.findTeacherByUsername(login.getUsername()).getId();
+            else if (role.equals("USER")) {
+                Student student = stdRepository.findStudentByUsername(login.getUsername());
+                if (student.isAvailable()) studyCenterId = student.getId();
+                else {
+                    logger.error("Accaunt faol emas Username: {}", login.getUsername());
+                    throw new AllExceptions.AccountExpiredException("Accaunt faol emas Username: " + login.getUsername());
+                }
+            }
+
+            logger.info("Username: {} muvafaqqiyatli login qildi", user.getUsername());
+
             return LoginForResponse.builder()
                     .username(user.getUsername())
-//                    .studyCenterId(user)
+                    .studyCenterId(studyCenterId)
                     .permissions(permissionsMap)
                     .role(role)
                     .token(jwtUtil.encode(login.getUsername(), user.getAuthorities()))
                     .build();
         }
+        logger.error("Username: {} yoki Parol: {} xato", login.getUsername(), login.getPassword());
         throw new AllExceptions.UsernameNotFoundException("Username yoki parol xato: from login");
     }
 }
+
+
+

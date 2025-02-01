@@ -2,9 +2,6 @@ package com.practice.StudyCenter.service.jwtService;
 
 import com.practice.StudyCenter.exception.AllExceptions;
 import com.practice.StudyCenter.service.authService.AuthService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,8 +40,22 @@ public class JwtFilter extends OncePerRequestFilter {
             token = authorizationHeader.substring(7);
             try {
                 userName = jwtUtil.extractClaims(token).getSubject();
-            } catch (ExpiredJwtException e) {
-                logger.error("JWT token eskirgan: {}", e.getMessage());
+            } catch (AllExceptions.ExpiredJwtException e) {
+                logger.error("JWT token expired: {}", e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token has expired");
+                return;
+            } catch (AllExceptions.MalformedJwtException e) {
+                logger.error("JWT token malformed: {}", e.getMessage());
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed JWT token");
+                return;
+            } catch (AllExceptions.SignatureException e) {
+                logger.error("JWT signature invalid: {}", e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT signature");
+                return;
+            } catch (AllExceptions.IllegalArgumentException e) {
+                logger.error("JWT token error: {}", e.getMessage());
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT token");
+                return;
             }
         }
 
@@ -60,9 +71,10 @@ public class JwtFilter extends OncePerRequestFilter {
                             .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
-            } catch (ExpiredJwtException | MalformedJwtException | SignatureException |
-                     IllegalArgumentException exception) {
-                throw new AllExceptions.InvalidJwtException("JWT xato yoki eskirgan: " + exception.getMessage());
+            } catch (Exception exception) {
+                logger.error("Error processing JWT token: {}", exception.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                return;
             }
         }
         filterChain.doFilter(request, response);

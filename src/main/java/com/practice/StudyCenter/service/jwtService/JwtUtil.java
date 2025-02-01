@@ -1,10 +1,11 @@
 package com.practice.StudyCenter.service.jwtService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -15,7 +16,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    final private int TOKEN_LIVE_TIME = 1000 * 60 * 60 * 24; // a day
+    final private long TOKEN_LIVE_TIME = 1000 * 60 * 60 * 24; // a day
 
     final private String SECRET_KEY = "LaudateomnesgenteslaudateMagnificatinseculaEtanimamealaudateMagnificatinseculaHappynationlivininahappynationAddthistothedependenciesblockinyourbuildLetmeknowifyouneedfurtherassistance";
 
@@ -23,7 +24,7 @@ public class JwtUtil {
         authorities.removeIf(authority -> !authority.getAuthority().startsWith("ROLE_"));
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("Created by: ", "https://abduraxim.uz");
-        extraClaims.put("Role", authorities.toString().substring(6,authorities.toString().length()-1));
+        extraClaims.put("Role", authorities.toString().substring(6, authorities.toString().length() - 1));
 
         return Jwts
                 .builder()
@@ -45,9 +46,14 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractClaims(token).getSubject();
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = extractClaims(token).getSubject();
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
+
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

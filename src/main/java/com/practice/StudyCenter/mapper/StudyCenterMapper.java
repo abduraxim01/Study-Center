@@ -4,6 +4,8 @@ import com.practice.StudyCenter.DTO.requestDTO.StudyCenterDTOForRequest;
 import com.practice.StudyCenter.DTO.responseDTO.StudyCenterDTOForResponse;
 import com.practice.StudyCenter.model.StudyCenter;
 
+import java.util.List;
+
 public class StudyCenterMapper {
 
     public StudyCenter toModel(StudyCenterDTOForRequest studyCenterDTOForRequest) {
@@ -20,5 +22,12 @@ public class StudyCenterMapper {
                 .phoneNumber(studyCenter.getPhoneNumber())
                 .created_at(studyCenter.getCreated_at())
                 .build();
+    }
+
+    public List<StudyCenterDTOForResponse> toDTO(List<StudyCenter> studyCenterList) {
+        if (studyCenterList.isEmpty()) return null;
+        return studyCenterList.stream()
+                .map(this::toDTO)
+                .toList();
     }
 }

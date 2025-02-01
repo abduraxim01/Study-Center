@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Builder
 public class AttendanceDTOForResponse {
 
+    private int id;
+
     private String name;
 
     private LocalDate localDate;

@@ -19,7 +19,7 @@ public class StudentController {
     @Autowired
     private GroupService grpService;
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN') and hasAuthority('STUDENT_CREATE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('STUDENT_CREATE')")
     @PostMapping(value = "/createStudent/{study_center_id}")
     public ResponseEntity<?> createStudent(@RequestBody StudentDTOForRequest studentDTOForRequest, @PathVariable int study_center_id) {
         try {
@@ -35,7 +35,7 @@ public class StudentController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','USER') and hasAuthority('GROUP_SHOW')")
+    @PreAuthorize(value = "hasRole('USER') and hasAuthority('GROUP_SHOW')")
     @GetMapping(value = "/getGroupsByStudentId/{student_id}")
     public ResponseEntity<?> getGroupsByStudentId(@PathVariable int student_id) {
         try {
@@ -55,7 +55,7 @@ public class StudentController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('STUDENT_DELETE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('STUDENT_DELETE')")
     @DeleteMapping(value = "/deleteStudent/{student_id}")
     public ResponseEntity<?> deleteStudent(@PathVariable int student_id) {
         try {
@@ -65,7 +65,7 @@ public class StudentController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('STUDENT_RESTORE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('STUDENT_RESTORE')")
     @PostMapping(value = "/restoreStudent/{student_id}")
     public ResponseEntity<?> restoreStudent(@PathVariable int student_id) {
         try {
@@ -75,12 +75,12 @@ public class StudentController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('SUPERADMIN','ADMIN') and hasAuthority('STUDENT_SOFT_DELETE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('STUDENT_SOFT_DELETE')")
     @DeleteMapping(value = "/softDeleteStudent/{student_id}")
     public ResponseEntity<?> softDeleteStudent(@PathVariable int student_id) {
         try {
             stdService.softDeleteStudent(student_id);
-            return ResponseEntity.ok("Student muvafaqqiyatli o'chirildi");
+            return ResponseEntity.ok("Student muvafaqqiyatli o'chirildi Id: " + student_id);
         } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }

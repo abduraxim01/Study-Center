@@ -1,6 +1,5 @@
 package com.practice.StudyCenter.DTO.requestDTO;
 
-import com.practice.StudyCenter.model.attendance.AttendanceStatus;
 import lombok.*;
 
 @Getter
@@ -10,7 +9,7 @@ import lombok.*;
 @Builder
 public class HomeworkDTOForRequest {
 
-    private AttendanceStatus status;
+    private String status;
 
     private int student_id;
 }

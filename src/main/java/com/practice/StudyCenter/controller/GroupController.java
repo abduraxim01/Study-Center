@@ -19,7 +19,7 @@ public class GroupController {
     @Autowired
     private TeacherService teachService;
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN') and hasAuthority('GROUP_CREATE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('GROUP_CREATE')")
     @PostMapping(value = "/createGroup/{study_center_id}")
     public ResponseEntity<?> createGroup(@RequestBody GroupDTOForRequest groupDTOForRequest, @PathVariable int study_center_id) {
         try {
@@ -39,7 +39,7 @@ public class GroupController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN') and hasAuthority('GROUP_DELETE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('GROUP_DELETE')")
     @DeleteMapping(value = "/deleteGroup/{group_id}")
     public ResponseEntity<?> deleteGroup(@PathVariable int group_id) {
         try {
@@ -49,8 +49,8 @@ public class GroupController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN') and hasAuthority('GROUP_RESTORE')")
-    @DeleteMapping(value = "/restoreGroup/{group_id}")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('GROUP_RESTORE')")
+    @PostMapping(value = "/restoreGroup/{group_id}")
     public ResponseEntity<?> restoreGroup(@PathVariable int group_id) {
         try {
             return ResponseEntity.ok(grpService.restoreGroup(group_id));
@@ -59,7 +59,7 @@ public class GroupController {
         }
     }
 
-    @PreAuthorize(value = "hasAnyRole('ADMIN') and hasAuthority('GROUP_SOFT_DELETE')")
+    @PreAuthorize(value = "hasRole('ADMIN') and hasAuthority('GROUP_SOFT_DELETE')")
     @DeleteMapping(value = "/softDeleteGroup/{group_id}")
     public ResponseEntity<String> softDeleteGroup(@PathVariable int group_id) {
         try {
